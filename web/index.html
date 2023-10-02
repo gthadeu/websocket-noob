@@ -1,0 +1,55 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Placar de Equipes</title>
+</head>
+<body>
+  <h1>Placar de Equipes</h1>
+  <div id="placar">
+    <!-- O placar será atualizado aqui -->
+  </div>
+  <button type="button" onclick="incrementScore(1, 1)">Incrementar Placar Team A</button>
+  <button type="button" onclick="incrementScore(1, 2)">Incrementar Placar Team B</button>
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+  <script>
+    const socket = io('ws://localhost:3001');
+
+    const placar = {
+      1 : 0,
+      2 : 0,
+    };
+
+    function atualizarPlacar() {
+      const placarDiv = document.getElementById('placar');
+      placarDiv.innerHTML = '';
+      for (const equipe in placar) {
+        placarDiv.innerHTML += `<p>${equipe}: ${placar[equipe]}</p>`;
+      }
+    }
+    
+
+    socket.on('updateScores', ({ gameId, scores }) => {
+      scores.forEach((score) => {
+        placar[score.team_id] = score.score;
+      });
+      atualizarPlacar();
+    });
+
+    function incrementScore(gameId, teamId) {
+      
+      placar[teamId]++; // Incrementa o placar da equipe
+      atualizarPlacar(); // Atualiza o placar no front-end
+
+      const scoreUpdate = {
+        gameId,
+        teamId,
+        score: placar[teamId], // Envie o novo valor do placar para o servidor
+      };
+      socket.emit('updateScore', scoreUpdate);
+    }
+  </script>
+</body>
+</html>
