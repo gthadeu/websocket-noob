@@ -1,0 +1,11 @@
+{
+    // quem mexer nisso aqui é corno
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "explorer.compactFolders": false,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  }
+  
